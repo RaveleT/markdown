@@ -25,7 +25,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("MAT2247Viewer")
+st.title("MAT Viewer")
 
 def load_local_html(file_path):
     try:
