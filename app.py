@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="MAT2141 Study Document", page_icon="⌚", layout="centered"
+    page_title="MAT2247 Study Document", page_icon="⌚", layout="centered"
 )
 
 # Force Streamlit's background to true black to match your HTML
@@ -17,7 +17,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("MAT2141 Watch Viewer")
+st.title("MAT2247Viewer")
 
 
 def load_local_html(file_path):
