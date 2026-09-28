@@ -1,4 +1,3 @@
-import requests
 import streamlit as st
 
 st.set_page_config(
@@ -6,33 +5,25 @@ st.set_page_config(
 )
 
 st.title("MAT2141 - Study Document Viewer")
-st.write("Rendering `Test_1.html` directly from your GitHub repository.")
-
-# TODO: Replace with your actual GitHub Raw URL
-# Example: https://raw.githubusercontent.com/username/repo/main/Test_1.html
-GITHUB_RAW_URL = (
-    "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/Test_1.html"
-)
+st.write("Rendering `Test_1.html` directly from the repository.")
 
 
-@st.cache_data(ttl=600)  # Cache the HTML content for 10 minutes
-def fetch_html_from_github(url):
+# Read the HTML file directly from the local directory
+def load_local_html(file_path):
   try:
-    response = requests.get(url)
-    response.raise_for_status()  # Raises an error for bad responses (404, 500, etc.)
-    return response.text
-  except Exception as e:
+    with open(file_path, "r", encoding="utf-8") as f:
+      return f.read()
+  except FileNotFoundError:
     return None
 
 
-# Load the HTML content
-html_content = fetch_html_from_github(GITHUB_RAW_URL)
+html_content = load_local_html("Test_1.html")
 
 if html_content:
   # Render the HTML content inside Streamlit with a scrollable frame
   st.components.v1.html(html_content, height=900, scrolling=True)
 else:
   st.error(
-      "Could not load the file from GitHub. Please check that the URL is"
-      " correct and the repository is public."
+      "`Test_1.html` was not found in the same folder. Please make sure both"
+      " files are in the same directory."
   )
