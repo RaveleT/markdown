@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAT2141 - Study Document</title>
+    
+<style>
+    body {
+        background-color: #0d1117;
+        color: #c9d1d9;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 40px;
+    }
+    h1, h2, h3 { color: #f0f6fc; border-bottom: 1px solid #30363d; padding-bottom: 0.3em; margin-top: 1.5em; }
+    code { background-color: #b1bac41f; padding: 0.2em 0.4em; border-radius: 6px; font-family: monospace; font-size: 85%; }
+    pre { background-color: #161b22; padding: 16px; border-radius: 8px; overflow: auto; border: 1px solid #30363d; }
+    blockquote { border-left: 4px solid #30363d; color: #8b949e; padding-left: 1em; margin: 0; }
+    table { border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #30363d; }
+    table th, table td { border: 1px solid #30363d; padding: 8px 12px; text-align: left; }
+    table th { background-color: #161b22; }
+
+    /* Improved Mermaid Diagram Styling */
+    .mermaid { 
+        background-color: #ffffff; /* White background so diagram colors are accurate */
+        padding: 20px; 
+        border-radius: 10px; 
+        margin: 25px 0;
+        display: block;
+        color: #333; /* Dark text for the diagram labels */
+    }
+    .MathJax_Display { overflow-x: auto; padding: 10px 0; }
+</style>
+
+    
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea']
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    // Initialize mermaid with a clear theme
+    mermaid.initialize({ 
+        startOnLoad: false, 
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e1f5fe',
+            lineColor: '#01579b',
+            textColor: '#333'
+        }
+    });
+
+    async function renderMermaid() {
+        const blocks = document.querySelectorAll('pre code.language-mermaid');
+        for (const block of blocks) {
+            const pre = block.parentElement;
+            const content = block.textContent.trim();
+            const div = document.createElement('div');
+            div.className = 'mermaid';
+            div.textContent = content;
+            pre.replaceWith(div);
+        }
+        await mermaid.run();
+    }
+
+    window.addEventListener('load', renderMermaid);
+</script>
+
+</head>
+<body>
+    <p>Here is the extracted and organized summary from your notes covering the specified scope (<strong>Cholesky Method</strong> and <strong>Iterative Methods - Jacobi only</strong>).</p>
+<p><em>(Note: Linear Programming is not covered in this specific Chapter 1 notes document, so only the available sections for Cholesky and Jacobi methods are extracted below.)</em></p>
+<hr />
+<h2 id="1-cholesky-method-15-marks-scope">1. Cholesky Method (15 Marks Scope)</h2>
+<h3 id="core-concept-conditions"><strong>Core Concept &amp; Conditions</strong></h3>
+<ul>
+<li>
+<p>Cholesky's method is a direct method used to solve a linear system $Ax = b$ specifically when $A$ is a <strong>symmetric positive definite matrix</strong>.</p>
+</li>
+<li>
+<p>A matrix $A$ satisfies this if $A = A^T$ and all its eigenvalues are positive (or all leading principal submatrix determinants are positive: $\det(A_i) &gt; 0$).</p>
+</li>
+<li>
+<p>Any symmetric positive definite matrix can be factorized into:</p>
+</li>
+</ul>
+<p>$$A = LL^T$$</p>
+<p>where $L$ is a lower triangular matrix with positive diagonal entries.</p>
+<h3 id="step-by-step-procedure"><strong>Step-by-Step Procedure</strong></h3>
+<ol>
+<li><strong>Factorization</strong>: Set up $LL^T$ using unknown elements $l_{ij}$ of the lower triangular matrix $L$:</li>
+</ol>
+<p>$$LL^T = \begin{pmatrix} l_{11} &amp; 0 &amp; 0 \ l_{21} &amp; l_{22} &amp; 0 \ l_{31} &amp; l_{32} &amp; l_{33} \end{pmatrix} \begin{pmatrix} l_{11} &amp; l_{21} &amp; l_{31} \ 0 &amp; l_{22} &amp; l_{32} \ 0 &amp; 0 &amp; l_{33} \end{pmatrix}$$</p>
+<ol start="2">
+<li>
+<p><strong>Compute Entries</strong>: Multiply row by row and equate entries to matrix $A$ to solve for $l_{ij}$ sequentially.</p>
+</li>
+<li>
+<p><strong>Forward Substitution</strong>: Introduce $y = L^T x$, and solve the lower-triangular system $Ly = b$ for the intermediate vector $y$.</p>
+</li>
+<li>
+<p><strong>Backward Substitution</strong>: Solve the upper-triangular system $L^T x = y$ to find the final solution vector $x$.</p>
+</li>
+</ol>
+<h3 id="example-from-notes"><strong>Example from Notes</strong></h3>
+<ul>
+<li>
+<p><strong>System</strong>: Solve $\begin{pmatrix} 1 &amp; -3 &amp; 4 \ -3 &amp; 34 &amp; -17 \ 4 &amp; -17 &amp; 18 \end{pmatrix} \begin{pmatrix} x_1 \ x_2 \ x_3 \end{pmatrix} = \begin{pmatrix} 9 \ 38 \ 25 \end{pmatrix}$.</p>
+</li>
+<li>
+<p><strong>Lower Matrix $L$</strong>:</p>
+</li>
+</ul>
+<p>$$L = \begin{pmatrix} 1 &amp; 0 &amp; 0 \ -3 &amp; 5 &amp; 0 \ 4 &amp; -1 &amp; 1 \end{pmatrix}$$</p>
+<ul>
+<li>
+<p><strong>Intermediate Vector $y$</strong>: Solving $Ly = b$ yields $y = (9, 13, 2)^T$.</p>
+</li>
+<li>
+<p><strong>Final Solution $x$</strong>: Solving $L^T x = y$ yields $x = (10, 3, 2)^T$.</p>
+</li>
+</ul>
+<hr />
+<h2 id="2-iterative-methods-jacobi-method-20-marks-scope">2. Iterative Methods: Jacobi Method (20 Marks Scope)</h2>
+<h3 id="overview-of-iterative-techniques"><strong>Overview of Iterative Techniques</strong></h3>
+<ul>
+<li>
+<p>Iterative methods start with an initial approximation $x^{(0)}$ and generate a sequence of vectors ${x^{(k)}}$ converging to the true solution $x$.</p>
+</li>
+<li>
+<p>They are highly efficient for large, sparse systems with a high percentage of zero entries, significantly reducing storage and round-off error accumulation compared to direct methods.</p>
+</li>
+</ul>
+<h3 id="component-form-formulation"><strong>Component-Form Formulation</strong></h3>
+<ul>
+<li>Solving the $i$-th equation in $Ax = b$ for $x_i$ (provided $a_{ii} \neq 0$) yields the Jacobi component formula:</li>
+</ul>
+<p>$$x_i^{(k)} = \frac{1}{a_{ii}} \left[ b_i - \sum_{\substack{j=1 \ j \neq i}}^{n} a_{ij} x_j^{(k-1)} \right], \quad \text{for } i = 1, 2, \dots, n$$</p>
+<h3 id="matrix-form-formulation"><strong>Matrix-Form Formulation</strong></h3>
+<ul>
+<li>
+<p>Matrix $A$ is split into its diagonal ($D$) and off-diagonal negative parts ($L$ and $U$), such that $A = D - L - U$.</p>
+</li>
+<li>
+<p>The Jacobi method can be expressed in the fixed-point iteration form:</p>
+</li>
+</ul>
+<p>$$x^{(k)} = Tx^{(k-1)} + c$$</p>
+<h3 id="convergence-theorem"><strong>Convergence Theorem</strong></h3>
+<ul>
+<li>For the iterative method to converge regardless of the starting point $x^{(0)}$, it is necessary and sufficient that the spectral radius of the iteration matrix satisfies $\rho(T) &lt; 1$ (or equivalently, that the matrix norm $\vert{}\vert{}I - Q^{-1}A\vert{}\vert{} &lt; 1$).</li>
+</ul>
+<hr />
+<blockquote>
+<p><strong>Note on Linear Programming:</strong> Linear programming is not included in the Chapter 1 notes provided (<code>2024MAT2247_ch1.pdf</code>). You may want to check your subsequent chapter notes (e.g., Chapter 2 or optimization modules) for that 15-mark section!</p>
+</blockquote>
+<p>Would you like me to help you work through a practice problem for either the Cholesky or Jacobi method?Here is the extracted and organized summary from your notes covering the specified scope (<strong>Cholesky Method</strong> and <strong>Iterative Methods - Jacobi only</strong>).</p>
+<p><em>(Note: Linear Programming is not covered in this specific Chapter 1 notes document, so only the available sections for Cholesky and Jacobi methods are extracted below.)</em></p>
+<hr />
+<h2 id="1-cholesky-method-15-marks-scope_1">1. Cholesky Method (15 Marks Scope)</h2>
+<h3 id="core-concept-conditions_1"><strong>Core Concept &amp; Conditions</strong></h3>
+<ul>
+<li>
+<p>Cholesky's method is a direct method used to solve a linear system $Ax = b$ specifically when $A$ is a <strong>symmetric positive definite matrix</strong>.</p>
+</li>
+<li>
+<p>A matrix $A$ satisfies this if $A = A^T$ and all its eigenvalues are positive (or all leading principal submatrix determinants are positive: $\det(A_i) &gt; 0$).</p>
+</li>
+<li>
+<p>Any symmetric positive definite matrix can be factorized into:</p>
+</li>
+</ul>
+<p>$$A = LL^T$$</p>
+<p>where $L$ is a lower triangular matrix with positive diagonal entries.</p>
+<h3 id="step-by-step-procedure_1"><strong>Step-by-Step Procedure</strong></h3>
+<ol>
+<li><strong>Factorization</strong>: Set up $LL^T$ using unknown elements $l_{ij}$ of the lower triangular matrix $L$:</li>
+</ol>
+<p>$$LL^T = \begin{pmatrix} l_{11} &amp; 0 &amp; 0 \ l_{21} &amp; l_{22} &amp; 0 \ l_{31} &amp; l_{32} &amp; l_{33} \end{pmatrix} \begin{pmatrix} l_{11} &amp; l_{21} &amp; l_{31} \ 0 &amp; l_{22} &amp; l_{32} \ 0 &amp; 0 &amp; l_{33} \end{pmatrix}$$</p>
+<ol start="2">
+<li>
+<p><strong>Compute Entries</strong>: Multiply row by row and equate entries to matrix $A$ to solve for $l_{ij}$ sequentially.</p>
+</li>
+<li>
+<p><strong>Forward Substitution</strong>: Introduce $y = L^T x$, and solve the lower-triangular system $Ly = b$ for the intermediate vector $y$.</p>
+</li>
+<li>
+<p><strong>Backward Substitution</strong>: Solve the upper-triangular system $L^T x = y$ to find the final solution vector $x$.</p>
+</li>
+</ol>
+<h3 id="example-from-notes_1"><strong>Example from Notes</strong></h3>
+<ul>
+<li>
+<p><strong>System</strong>: Solve $\begin{pmatrix} 1 &amp; -3 &amp; 4 \ -3 &amp; 34 &amp; -17 \ 4 &amp; -17 &amp; 18 \end{pmatrix} \begin{pmatrix} x_1 \ x_2 \ x_3 \end{pmatrix} = \begin{pmatrix} 9 \ 38 \ 25 \end{pmatrix}$.</p>
+</li>
+<li>
+<p><strong>Lower Matrix $L$</strong>:</p>
+</li>
+</ul>
+<p>$$L = \begin{pmatrix} 1 &amp; 0 &amp; 0 \ -3 &amp; 5 &amp; 0 \ 4 &amp; -1 &amp; 1 \end{pmatrix}$$</p>
+<ul>
+<li>
+<p><strong>Intermediate Vector $y$</strong>: Solving $Ly = b$ yields $y = (9, 13, 2)^T$.</p>
+</li>
+<li>
+<p><strong>Final Solution $x$</strong>: Solving $L^T x = y$ yields $x = (10, 3, 2)^T$.</p>
+</li>
+</ul>
+<hr />
+<h2 id="2-iterative-methods-jacobi-method-20-marks-scope_1">2. Iterative Methods: Jacobi Method (20 Marks Scope)</h2>
+<h3 id="overview-of-iterative-techniques_1"><strong>Overview of Iterative Techniques</strong></h3>
+<ul>
+<li>
+<p>Iterative methods start with an initial approximation $x^{(0)}$ and generate a sequence of vectors ${x^{(k)}}$ converging to the true solution $x$.</p>
+</li>
+<li>
+<p>They are highly efficient for large, sparse systems with a high percentage of zero entries, significantly reducing storage and round-off error accumulation compared to direct methods.</p>
+</li>
+</ul>
+<h3 id="component-form-formulation_1"><strong>Component-Form Formulation</strong></h3>
+<ul>
+<li>Solving the $i$-th equation in $Ax = b$ for $x_i$ (provided $a_{ii} \neq 0$) yields the Jacobi component formula:</li>
+</ul>
+<p>$$x_i^{(k)} = \frac{1}{a_{ii}} \left[ b_i - \sum_{\substack{j=1 \ j \neq i}}^{n} a_{ij} x_j^{(k-1)} \right], \quad \text{for } i = 1, 2, \dots, n$$</p>
+<h3 id="matrix-form-formulation_1"><strong>Matrix-Form Formulation</strong></h3>
+<ul>
+<li>
+<p>Matrix $A$ is split into its diagonal ($D$) and off-diagonal negative parts ($L$ and $U$), such that $A = D - L - U$.</p>
+</li>
+<li>
+<p>The Jacobi method can be expressed in the fixed-point iteration form:</p>
+</li>
+</ul>
+<p>$$x^{(k)} = Tx^{(k-1)} + c$$</p>
+<h3 id="convergence-theorem_1"><strong>Convergence Theorem</strong></h3>
+<ul>
+<li>For the iterative method to converge regardless of the starting point $x^{(0)}$, it is necessary and sufficient that the spectral radius of the iteration matrix satisfies $\rho(T) &lt; 1$ (or equivalently, that the matrix norm $\vert{}\vert{}I - Q^{-1}A\vert{}\vert{} &lt; 1$).</li>
+</ul>
+<hr />
+<blockquote>
+<p><strong>Note on Linear Programming:</strong> Linear programming is not included in the Chapter 1 notes provided (<code>2024MAT2247_ch1.pdf</code>). You may want to check your subsequent chapter notes (e.g., Chapter 2 or optimization modules) for that 15-mark section!</p>
+</blockquote>
+<p>Would you like me to help you work through a practice problem for either the Cholesky or Jacobi method?</p>
+<p>Here are the Linear Programming notes transcribed and organized from your lecture frames:</p>
+<hr />
+<h2 id="chapter-2-linear-programming-formulation"><strong>Chapter 2: Linear Programming Formulation</strong></h2>
+<h3 id="example-problem-furniture-company-manufacturing"><strong>Example Problem: Furniture Company Manufacturing</strong></h3>
+<ul>
+<li>
+<p><strong>Problem Statement:</strong> A furniture company manufactures desks and chairs. The sawing department cuts lumber for both products before they move to separate assembly departments, and finally to the painting department.</p>
+</li>
+<li>
+<p><strong>Capacities:</strong></p>
+</li>
+<li>
+<p><strong>Sawing Department:</strong> 200 chairs or 80 desks daily.</p>
+</li>
+<li>
+<p><strong>Assembly Departments:</strong> Chair assembly can produce 120 chairs daily; desk assembly can produce 60 desks daily.</p>
+</li>
+<li>
+<p><strong>Painting Department:</strong> Daily capacity of either 150 chairs or 110 desks.</p>
+</li>
+<li>
+<p><strong>Profit:</strong> R50 per chair and R100 per desk. The goal is to formulate a Linear Programming (LP) model to maximize profit.</p>
+</li>
+</ul>
+<hr />
+<h3 id="step-by-step-formulation"><strong>Step-by-Step Formulation</strong></h3>
+<h4 id="1-define-decision-variables"><strong>1. Define Decision Variables</strong></h4>
+<ul>
+<li>
+<p>Let $x_1 =$ number of chairs produced per day.</p>
+</li>
+<li>
+<p>Let $x_2 =$ number of desks produced per day.</p>
+</li>
+</ul>
+<h4 id="2-objective-function"><strong>2. Objective Function</strong></h4>
+<p>We want to <strong>maximize</strong> total daily profit ($Z$):</p>
+<p>$$\text{Maximize } Z = 50x_1 + 100x_2$$</p>
+<h4 id="3-constraints"><strong>3. Constraints</strong></h4>
+<ul>
+<li><strong>Sawing Department Constraint:</strong><br />
+Using the fractional capacity representation:</li>
+</ul>
+<p>$$\frac{1}{200}x_1 + \frac{1}{80}x_2 \le 1$$</p>
+<p>Clearing fractions yields the standard linear form:</p>
+<p>$$2x_1 + 5x_2 \le 400$$</p>
+<ul>
+<li><strong>Assembly Department Constraints:</strong></li>
+<li>Chair assembly limit:</li>
+</ul>
+<p>$$x_1 \le 120$$</p>
+<ul>
+<li>Desk assembly limit:</li>
+</ul>
+<p>$$x_2 \le 60$$</p>
+<p><em>(Note: Additional painting department constraints and non-negativity constraints like $x_1, x_2 \ge 0$ would follow in subsequent frames).</em></p>
+<p>Here are the continuation and completion of the Linear Programming notes from frames 11 to 20:</p>
+<hr />
+<h3 id="example-1-furniture-company-continued"><strong>Example 1: Furniture Company (Continued)</strong></h3>
+<h4 id="constraints-completed"><strong>Constraints (Completed)</strong></h4>
+<ul>
+<li><strong>Painting Department Constraint:</strong><br />
+Using the capacity representation for chairs (150 daily limit) and desks (110 daily limit):</li>
+</ul>
+<p>$$\frac{1}{150}x_1 + \frac{1}{110}x_2 \le 1$$</p>
+<p>Clearing fractions yields the standard linear form:</p>
+<p>$$11x_1 + 15x_2 \le 1650$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<hr />
+<h3 id="example-2-truckco-manufacturing"><strong>Example 2: Truckco Manufacturing</strong></h3>
+<ul>
+<li>
+<p><strong>Problem Statement:</strong> Truckco manufactures two types of trucks: Type 1 and Type 2. Each truck must go through a painting shop and an assembly shop.</p>
+</li>
+<li>
+<p><strong>Capacities:</strong></p>
+</li>
+<li>
+<p><strong>Painting Shop:</strong> If completely devoted to Type 1 trucks, 800 per day can be painted; if completely devoted to Type 2 trucks, 700 per day can be painted.</p>
+</li>
+<li>
+<p><strong>Assembly Shop:</strong> If completely devoted to assembling Type 1 engines, 1,500 per day can be assembled; if completely devoted to assembling Type 2 engines, 1,200 per day can be assembled.</p>
+</li>
+<li>
+<p><strong>Profit:</strong> Each Type 1 truck contributes R300 to profit; each Type 2 truck contributes R500.</p>
+</li>
+<li>
+<p><strong>Goal:</strong> Formulate an LP to maximize Truckco's profit.</p>
+</li>
+</ul>
+<hr />
+<h3 id="example-3-appliance-company-distribution"><strong>Example 3: Appliance Company Distribution</strong></h3>
+<ul>
+<li>
+<p><strong>Problem Statement:</strong> An appliance company has a warehouse and two terminals.</p>
+</li>
+<li>
+<p><strong>Goal:</strong> To minimize shipping costs, the manager must decide how many appliances should be shipped from each location.</p>
+</li>
+</ul>
+<p>Here are the continuation and completion of the notes on the <strong>Truckco Manufacturing</strong> linear programming formulation (frames 21 to 30):</p>
+<hr />
+<h3 id="example-2-truckco-manufacturing-continued"><strong>Example 2: Truckco Manufacturing (Continued)</strong></h3>
+<h4 id="decision-variables"><strong>Decision Variables</strong></h4>
+<ul>
+<li>Let $x_1 =$ No. of Type 1 trucks produced per day.</li>
+<li>Let $x_2 =$ No. of Type 2 trucks produced per day.</li>
+</ul>
+<h4 id="objective-function"><strong>Objective Function</strong></h4>
+<p>Maximize daily profit ($z$):</p>
+<p>$$\max z = 300x_1 + 500x_2$$</p>
+<h4 id="constraints"><strong>Constraints</strong></h4>
+<ul>
+<li><strong>Painting Shop Constraint:</strong><br />
+Using the capacity representation for Type 1 trucks (800 daily limit) and Type 2 trucks (700 daily limit):</li>
+</ul>
+<p>$$\frac{1}{800}x_1 + \frac{1}{700}x_2 \le 1$$</p>
+<p>Clearing fractions by multiplying by 5600 yields:</p>
+<p>$$7x_1 + 8x_2 \le 5600$$</p>
+<ul>
+<li><strong>Assembly Shop Constraint:</strong><br />
+Using the capacity representation for Type 1 truck engines (1500 daily limit) and Type 2 truck engines (1200 daily limit):</li>
+</ul>
+<p>$$\frac{1}{1500}x_1 + \frac{1}{1200}x_2 \le 1$$</p>
+<p>Clearing fractions by multiplying by 6000 yields:</p>
+<p>$$4x_1 + 5x_2 \le 6000$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<hr />
+<h3 id="example-3-appliance-company-distribution_1"><strong>Example 3: Appliance Company Distribution</strong></h3>
+<ul>
+<li><strong>Problem Statement:</strong> An appliance company has a warehouse and two terminals. To minimize shipping costs, the manager must decide how many appliances should be shipped from each location.</li>
+</ul>
+<p>Here is the continuation of the lecture notes for <strong>Example 3: Appliance Company Distribution</strong> (frames 31 to 40):</p>
+<hr />
+<h3 id="example-3-appliance-company-distribution-continued"><strong>Example 3: Appliance Company Distribution (Continued)</strong></h3>
+<h4 id="problem-statement"><strong>Problem Statement</strong></h4>
+<p>An appliance company has a warehouse and two terminals. There is a total supply of 1200 units in the warehouse, and a demand of 400 units in Terminal A and 500 units in Terminal B. It costs R12 to ship each unit to Terminal A and R16 to ship to Terminal B. Formulate an LP to minimize the cost of units shipped to each terminal.</p>
+<h4 id="decision-variables_1"><strong>Decision Variables</strong></h4>
+<ul>
+<li>
+<p>Let $x_1 =$ Number of appliances shipped to Terminal A.</p>
+</li>
+<li>
+<p>Let $x_2 =$ Number of appliances shipped to Terminal B.</p>
+</li>
+</ul>
+<h4 id="objective-function_1"><strong>Objective Function</strong></h4>
+<p>Minimize total shipping cost ($z$):</p>
+<p>$$\min z = 12x_1 + 16x_2$$</p>
+<h4 id="constraints_1"><strong>Constraints</strong></h4>
+<ul>
+<li><strong>Warehouse Supply Constraint:</strong><br />
+The total number of units shipped from the warehouse cannot exceed the available supply of 1200 units:</li>
+</ul>
+<p>$$x_1 + x_2 \le 1200$$</p>
+<ul>
+<li><strong>Terminal A Demand Constraint:</strong><br />
+The demand at Terminal A is at least 400 units:</li>
+</ul>
+<p>$$x_1 \ge 400$$</p>
+<ul>
+<li><strong>Terminal B Demand Constraint:</strong><br />
+The demand at Terminal B is at least 500 units:</li>
+</ul>
+<p>$$x_2 \ge 500$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<p>Here is the continuation of the lecture notes for <strong>Example 3: Appliance Company Distribution</strong> (frames 31 to 40):</p>
+<hr />
+<h3 id="example-3-appliance-company-distribution-continued_1"><strong>Example 3: Appliance Company Distribution (Continued)</strong></h3>
+<h4 id="problem-statement_1"><strong>Problem Statement</strong></h4>
+<p>An appliance company has a warehouse and two terminals. There is a total supply of 1200 units in the warehouse, and a demand of 400 units in Terminal A and 500 units in Terminal B. It costs R12 to ship each unit to Terminal A and R16 to ship to Terminal B. Formulate an LP to minimize the cost of units shipped to each terminal.</p>
+<h4 id="decision-variables_2"><strong>Decision Variables</strong></h4>
+<ul>
+<li>
+<p>Let $x_1 =$ Number of appliances shipped to Terminal A.</p>
+</li>
+<li>
+<p>Let $x_2 =$ Number of appliances shipped to Terminal B.</p>
+</li>
+</ul>
+<h4 id="objective-function_2"><strong>Objective Function</strong></h4>
+<p>Minimize total shipping cost ($z$):</p>
+<p>$$\min z = 12x_1 + 16x_2$$</p>
+<h4 id="constraints_2"><strong>Constraints</strong></h4>
+<ul>
+<li><strong>Warehouse Supply Constraint:</strong><br />
+The total number of units shipped from the warehouse cannot exceed the available supply of 1200 units:</li>
+</ul>
+<p>$$x_1 + x_2 \le 1200$$</p>
+<ul>
+<li><strong>Terminal A Demand Constraint:</strong><br />
+The demand at Terminal A is at least 400 units:</li>
+</ul>
+<p>$$x_1 \ge 400$$</p>
+<ul>
+<li><strong>Terminal B Demand Constraint:</strong><br />
+The demand at Terminal B is at least 500 units:</li>
+</ul>
+<p>$$x_2 \ge 500$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$Here is the complete and final compilation of all the linear programming formulation examples and homework problems covered in the lecture notes:</p>
+<hr />
+<h1 id="comprehensive-lecture-notes-linear-programming-formulations"><strong>Comprehensive Lecture Notes: Linear Programming Formulations</strong></h1>
+<h2 id="example-2-truckco-manufacturing_1"><strong>Example 2: Truckco Manufacturing</strong></h2>
+<h3 id="problem-overview"><strong>Problem Overview</strong></h3>
+<p>Truckco manufactures two types of trucks (Type 1 and Type 2) using a painting shop and an assembly shop, with specific daily capacities and profit contributions.</p>
+<ul>
+<li><strong>Decision Variables:</strong></li>
+<li>Let $x_1 =$ Number of Type 1 trucks produced per day.</li>
+<li>
+<p>Let $x_2 =$ Number of Type 2 trucks produced per day.</p>
+</li>
+<li>
+<p><strong>Objective Function:</strong><br />
+Maximize daily profit ($z$):</p>
+</li>
+</ul>
+<p>$$\max z = 300x_1 + 500x_2$$</p>
+<ul>
+<li><strong>Constraints:</strong></li>
+<li><strong>Painting Shop Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{800}x_1 + \frac{1}{700}x_2 \le 1$$</p>
+<p>Multiplying by 5600 to clear fractions:</p>
+<p>$$7x_1 + 8x_2 \le 5600$$</p>
+<ul>
+<li><strong>Assembly Shop Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{1500}x_1 + \frac{1}{1200}x_2 \le 1$$</p>
+<p>Multiplying by 6000 to clear fractions:</p>
+<p>$$4x_1 + 5x_2 \le 6000$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<hr />
+<h2 id="example-3-appliance-company-distribution_2"><strong>Example 3: Appliance Company Distribution</strong></h2>
+<h3 id="problem-overview_1"><strong>Problem Overview</strong></h3>
+<p>An appliance company has a warehouse with a total supply of 1200 units and needs to supply two terminals: Terminal A (demand of 400 units) and Terminal B (demand of 500 units). Shipping costs are R12 per unit to Terminal A and R16 per unit to Terminal B.</p>
+<ul>
+<li><strong>Decision Variables:</strong></li>
+<li>
+<p>Let $x_1 =$ Number of appliances shipped to Terminal A.</p>
+</li>
+<li>
+<p>Let $x_2 =$ Number of appliances shipped to Terminal B.</p>
+</li>
+<li>
+<p><strong>Objective Function:</strong><br />
+Minimize total shipping cost ($z$):</p>
+</li>
+</ul>
+<p>$$\min z = 12x_1 + 16x_2$$</p>
+<ul>
+<li><strong>Constraints:</strong></li>
+<li><strong>Warehouse Supply Constraint:</strong> Total units shipped cannot exceed available supply:</li>
+</ul>
+<p>$$x_1 + x_2 \le 1200$$</p>
+<ul>
+<li><strong>Terminal A Demand Constraint:</strong> Minimum demand requirement:</li>
+</ul>
+<p>$$x_1 \ge 400$$</p>
+<ul>
+<li><strong>Terminal B Demand Constraint:</strong> Minimum demand requirement:</li>
+</ul>
+<p>$$x_2 \ge 500$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<hr />
+<h2 id="homework-furniture-company-problem"><strong>Homework: Furniture Company Problem</strong></h2>
+<h3 id="problem-overview_2"><strong>Problem Overview</strong></h3>
+<p>A furniture company manufactures desks and chairs that go through sawing, assembly, and painting departments. The daily capacities and profit margins are given as follows:</p>
+<ul>
+<li>
+<p>Sawing department: 200 chairs or 80 desks daily.</p>
+</li>
+<li>
+<p>Chair assembly: 120 chairs daily.</p>
+</li>
+<li>
+<p>Desk assembly: 60 desks daily.</p>
+</li>
+<li>
+<p>Painting department: 150 chairs or 110 desks daily.</p>
+</li>
+<li>
+<p>Profit: R50 per chair, R100 per desk.</p>
+</li>
+<li>
+<p><strong>Decision Variables:</strong></p>
+</li>
+<li>
+<p>Let $x_1 =$ Number of chairs produced per day.</p>
+</li>
+<li>
+<p>Let $x_2 =$ Number of desks produced per day.</p>
+</li>
+<li>
+<p><strong>Objective Function:</strong><br />
+Maximize total daily profit ($z$):</p>
+</li>
+</ul>
+<p>$$\max z = 50x_1 + 100x_2$$</p>
+<ul>
+<li><strong>Constraints:</strong></li>
+<li><strong>Sawing Department Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{200}x_1 + \frac{1}{80}x_2 \le 1 \implies 2x_1 + 5x_2 \le 400$$</p>
+<ul>
+<li><strong>Chair Assembly Department Constraint:</strong></li>
+</ul>
+<p>$$x_1 \le 120$$</p>
+<ul>
+<li><strong>Desk Assembly Department Constraint:</strong></li>
+</ul>
+<p>$$x_2 \le 60$$</p>
+<ul>
+<li><strong>Painting Department Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{150}x_1 + \frac{1}{110}x_2 \le 1 \implies 11x_1 + 15x_2 \le 1650$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$Here is the complete and final compilation of all the linear programming formulation examples and homework problems covered in the lecture notes:</p>
+<hr />
+<h1 id="comprehensive-lecture-notes-linear-programming-formulations_1"><strong>Comprehensive Lecture Notes: Linear Programming Formulations</strong></h1>
+<h2 id="example-2-truckco-manufacturing_2"><strong>Example 2: Truckco Manufacturing</strong></h2>
+<h3 id="problem-overview_3"><strong>Problem Overview</strong></h3>
+<p>Truckco manufactures two types of trucks (Type 1 and Type 2) using a painting shop and an assembly shop, with specific daily capacities and profit contributions.</p>
+<ul>
+<li><strong>Decision Variables:</strong></li>
+<li>Let $x_1 =$ Number of Type 1 trucks produced per day.</li>
+<li>
+<p>Let $x_2 =$ Number of Type 2 trucks produced per day.</p>
+</li>
+<li>
+<p><strong>Objective Function:</strong><br />
+Maximize daily profit ($z$):</p>
+</li>
+</ul>
+<p>$$\max z = 300x_1 + 500x_2$$</p>
+<ul>
+<li><strong>Constraints:</strong></li>
+<li><strong>Painting Shop Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{800}x_1 + \frac{1}{700}x_2 \le 1$$</p>
+<p>Multiplying by 5600 to clear fractions:</p>
+<p>$$7x_1 + 8x_2 \le 5600$$</p>
+<ul>
+<li><strong>Assembly Shop Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{1500}x_1 + \frac{1}{1200}x_2 \le 1$$</p>
+<p>Multiplying by 6000 to clear fractions:</p>
+<p>$$4x_1 + 5x_2 \le 6000$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<hr />
+<h2 id="example-3-appliance-company-distribution_3"><strong>Example 3: Appliance Company Distribution</strong></h2>
+<h3 id="problem-overview_4"><strong>Problem Overview</strong></h3>
+<p>An appliance company has a warehouse with a total supply of 1200 units and needs to supply two terminals: Terminal A (demand of 400 units) and Terminal B (demand of 500 units). Shipping costs are R12 per unit to Terminal A and R16 per unit to Terminal B.</p>
+<ul>
+<li><strong>Decision Variables:</strong></li>
+<li>
+<p>Let $x_1 =$ Number of appliances shipped to Terminal A.</p>
+</li>
+<li>
+<p>Let $x_2 =$ Number of appliances shipped to Terminal B.</p>
+</li>
+<li>
+<p><strong>Objective Function:</strong><br />
+Minimize total shipping cost ($z$):</p>
+</li>
+</ul>
+<p>$$\min z = 12x_1 + 16x_2$$</p>
+<ul>
+<li><strong>Constraints:</strong></li>
+<li><strong>Warehouse Supply Constraint:</strong> Total units shipped cannot exceed available supply:</li>
+</ul>
+<p>$$x_1 + x_2 \le 1200$$</p>
+<ul>
+<li><strong>Terminal A Demand Constraint:</strong> Minimum demand requirement:</li>
+</ul>
+<p>$$x_1 \ge 400$$</p>
+<ul>
+<li><strong>Terminal B Demand Constraint:</strong> Minimum demand requirement:</li>
+</ul>
+<p>$$x_2 \ge 500$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<hr />
+<h2 id="homework-furniture-company-problem_1"><strong>Homework: Furniture Company Problem</strong></h2>
+<h3 id="problem-overview_5"><strong>Problem Overview</strong></h3>
+<p>A furniture company manufactures desks and chairs that go through sawing, assembly, and painting departments. The daily capacities and profit margins are given as follows:</p>
+<ul>
+<li>
+<p>Sawing department: 200 chairs or 80 desks daily.</p>
+</li>
+<li>
+<p>Chair assembly: 120 chairs daily.</p>
+</li>
+<li>
+<p>Desk assembly: 60 desks daily.</p>
+</li>
+<li>
+<p>Painting department: 150 chairs or 110 desks daily.</p>
+</li>
+<li>
+<p>Profit: R50 per chair, R100 per desk.</p>
+</li>
+<li>
+<p><strong>Decision Variables:</strong></p>
+</li>
+<li>
+<p>Let $x_1 =$ Number of chairs produced per day.</p>
+</li>
+<li>
+<p>Let $x_2 =$ Number of desks produced per day.</p>
+</li>
+<li>
+<p><strong>Objective Function:</strong><br />
+Maximize total daily profit ($z$):</p>
+</li>
+</ul>
+<p>$$\max z = 50x_1 + 100x_2$$</p>
+<ul>
+<li><strong>Constraints:</strong></li>
+<li><strong>Sawing Department Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{200}x_1 + \frac{1}{80}x_2 \le 1 \implies 2x_1 + 5x_2 \le 400$$</p>
+<ul>
+<li><strong>Chair Assembly Department Constraint:</strong></li>
+</ul>
+<p>$$x_1 \le 120$$</p>
+<ul>
+<li><strong>Desk Assembly Department Constraint:</strong></li>
+</ul>
+<p>$$x_2 \le 60$$</p>
+<ul>
+<li><strong>Painting Department Constraint:</strong></li>
+</ul>
+<p>$$\frac{1}{150}x_1 + \frac{1}{110}x_2 \le 1 \implies 11x_1 + 15x_2 \le 1650$$</p>
+<ul>
+<li><strong>Non-Negativity Constraints:</strong></li>
+</ul>
+<p>$$x_1, x_2 \ge 0$$</p>
+<p>Here is the complete, clean solution written out step-by-step as you would present it on an exam paper, incorporating the corrected system equations and confirming convergence toward the exact solution $x = \begin{pmatrix} 1 \ 1 \ 1 \end{pmatrix}$.</p>
+<hr />
+<h3 id="given-system-of-linear-equations"><strong>Given System of Linear Equations:</strong></h3>
+<p>$$2x_1 - x_2 = 1$$</p>
+<p>$$-x_1 + 2x_2 - x_3 = 0$$</p>
+<p>$$-x_2 + 2x_3 = 1$$</p>
+<p>Initial guess: $x^{(0)} = \begin{pmatrix} 0 \ 0 \ 0 \end{pmatrix}$</p>
+<p>Exact solution: $x = \begin{pmatrix} 1 \ 1 \ 1 \end{pmatrix}$</p>
+<hr />
+<h3 id="step-1-find-the-iteration-matrix-t_jac-and-vector-c_jac"><strong>Step 1: Find the Iteration Matrix $T_{jac}$ and Vector $c_{jac}$</strong></h3>
+<p>Write the system in matrix form $Ax = b$:</p>
+<p>$$A = \begin{pmatrix} 2 &amp; -1 &amp; 0 \ -1 &amp; 2 &amp; -1 \ 0 &amp; -1 &amp; 2 \end{pmatrix}, \quad b = \begin{pmatrix} 1 \ 0 \ 1 \end{pmatrix}$$</p>
+<p>For the Jacobi method, split $A = D - L - U$:</p>
+<ul>
+<li>Diagonal matrix: $D = \begin{pmatrix} 2 &amp; 0 &amp; 0 \ 0 &amp; 2 &amp; 0 \ 0 &amp; 0 &amp; 2 \end{pmatrix}$</li>
+<li>Off-diagonal component: $L + U = \begin{pmatrix} 0 &amp; 1 &amp; 0 \ 1 &amp; 0 &amp; 1 \ 0 &amp; 1 &amp; 0 \end{pmatrix}$</li>
+</ul>
+<p>Find $D^{-1}$:</p>
+<p>$$D^{-1} = \begin{pmatrix} 1/2 &amp; 0 &amp; 0 \ 0 &amp; 1/2 &amp; 0 \ 0 &amp; 0 &amp; 1/2 \end{pmatrix}$$</p>
+<p>Calculate $T_{jac} = D^{-1}(L + U)$ and $c_{jac} = D^{-1}b$:</p>
+<p>$$T_{jac} = \begin{pmatrix} 1/2 &amp; 0 &amp; 0 \ 0 &amp; 1/2 &amp; 0 \ 0 &amp; 0 &amp; 1/2 \end{pmatrix} \begin{pmatrix} 0 &amp; 1 &amp; 0 \ 1 &amp; 0 &amp; 1 \ 0 &amp; 1 &amp; 0 \end{pmatrix} = \begin{pmatrix} 0 &amp; 0.5 &amp; 0 \ 0.5 &amp; 0 &amp; 0.5 \ 0 &amp; 0.5 &amp; 0 \end{pmatrix}$$</p>
+<p>$$c_{jac} = \begin{pmatrix} 1/2 &amp; 0 &amp; 0 \ 0 &amp; 1/2 &amp; 0 \ 0 &amp; 0 &amp; 1/2 \end{pmatrix} \begin{pmatrix} 1 \ 0 \ 1 \end{pmatrix} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<hr />
+<h3 id="step-2-show-convergence-using-the-spectral-radius"><strong>Step 2: Show Convergence Using the Spectral Radius</strong></h3>
+<p>Find the eigenvalues of $T_{jac}$ by solving $\det(T_{jac} - \lambda I) = 0$:</p>
+<p>$$\det \begin{pmatrix} -\lambda &amp; 0.5 &amp; 0 \ 0.5 &amp; -\lambda &amp; 0.5 \ 0 &amp; 0.5 &amp; -\lambda \end{pmatrix} = 0$$</p>
+<p>Expanding the determinant:</p>
+<p>$$-\lambda(\lambda^2 - 0.25) - 0.5(0.5(-\lambda)) = 0$$</p>
+<p>$$-\lambda^3 + 0.25\lambda + 0.25\lambda = 0$$</p>
+<p>$$-\lambda^3 + 0.5\lambda = 0 \implies -\lambda(\lambda^2 - 0.5) = 0$$</p>
+<p>The eigenvalues are:</p>
+<p>$$\lambda_1 = 0, \quad \lambda_2 = \sqrt{0.5} \approx 0.7071, \quad \lambda_3 = -\sqrt{0.5} \approx -0.7071$$</p>
+<p>The spectral radius $\rho(T_{jac})$ is the maximum absolute eigenvalue:</p>
+<p>$$\rho(T_{jac}) = \max(\vert{}\lambda_i\vert{}) = \sqrt{0.5} \approx 0.7071$$</p>
+<p>Since $\rho(T_{jac}) &lt; 1$, the Jacobi iteration method <strong>converges</strong> for any initial guess.</p>
+<hr />
+<h3 id="step-3-perform-two-iterations-of-the-jacobi-method"><strong>Step 3: Perform Two Iterations of the Jacobi Method</strong></h3>
+<p>Formula: $x^{(k)} = T_{jac}x^{(k-1)} + c_{jac}$</p>
+<ul>
+<li><strong>Iteration 1 ($k=1$):</strong></li>
+</ul>
+<p>$$x^{(1)} = \begin{pmatrix} 0 &amp; 0.5 &amp; 0 \ 0.5 &amp; 0 &amp; 0.5 \ 0 &amp; 0.5 &amp; 0 \end{pmatrix} \begin{pmatrix} 0 \ 0 \ 0 \end{pmatrix} + \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<ul>
+<li><strong>Iteration 2 ($k=2$):</strong></li>
+</ul>
+<p>$$x^{(2)} = \begin{pmatrix} 0 &amp; 0.5 &amp; 0 \ 0.5 &amp; 0 &amp; 0.5 \ 0 &amp; 0.5 &amp; 0 \end{pmatrix} \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix} + \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<p>$$x^{(2)} = \begin{pmatrix} 0(0.5) + 0.5(0) + 0(0.5) \ 0.5(0.5) + 0(0) + 0.5(0.5) \ 0(0.5) + 0.5(0) + 0(0.5) \end{pmatrix} + \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<p>$$x^{(2)} = \begin{pmatrix} 0 \ 0.25 + 0.25 \ 0 \end{pmatrix} + \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix} = \begin{pmatrix} 0.5 \ 0.5 \ 0.5 \end{pmatrix}$$</p>
+<hr />
+<h3 id="step-4-find-the-infinity-norm-vertx1-x2vert_infty"><strong>Step 4: Find the Infinity Norm $\Vert{}x^{(1)} - x^{(2)}\Vert{}_\infty$</strong></h3>
+<p>Calculate the difference vector:</p>
+<p>$$x^{(1)} - x^{(2)} = \begin{pmatrix} 0.5 - 0.5 \ 0 - 0.5 \ 0.5 - 0.5 \end{pmatrix} = \begin{pmatrix} 0 \ -0.5 \ 0 \end{pmatrix}$$</p>
+<p>The infinity norm is the maximum absolute element:</p>
+<p>$$\Vert{}x^{(1)} - x^{(2)}\Vert{}_\infty = \max(\vert{}0\vert{}, \vert{}-0.5\vert{}, \vert{}0\vert{}) = 0.5$$</p>
+<hr />
+<h3 id="step-5-find-the-2-norm-vertx1-x2vert_2"><strong>Step 5: Find the 2-Norm $\Vert{}x^{(1)} - x^{(2)}\Vert{}_2$</strong></h3>
+<p>Calculate the Euclidean norm:</p>
+<p>$$\Vert{}x^{(1)} - x^{(2)}\Vert{}_2 = \sqrt{0^2 + (-0.5)^2 + 0^2} = \sqrt{0.25} = 0.5$$</p>
+<h3 id="convergence-theorem-of-an-iterative-solver"><strong>Convergence Theorem of an Iterative Solver</strong></h3>
+<p><strong>Theorem:</strong><br />
+A stationary linear iterative method of the form $x^{(k)} = Tx^{(k-1)} + c$ converges to the unique solution of the system for any arbitrary initial guess $x^{(0)}$ if and only if the spectral radius of the iteration matrix $T$ is strictly less than 1:</p>
+<p>$$\rho(T) &lt; 1$$</p>
+<p>where the spectral radius $\rho(T)$ is defined as the maximum absolute value of the eigenvalues of $T$:</p>
+<p>$$\rho(T) = \max_i \vert{}\lambda_i\vert{}$$</p>
+<hr />
+<h3 id="step-by-step-jacobi-iteration-method-exam-style-solution"><strong>Step-by-Step Jacobi Iteration Method (Exam-Style Solution)</strong></h3>
+<h4 id="problem-statement_2"><strong>Problem Statement:</strong></h4>
+<p>Solve the following system of linear equations using the Jacobi iteration method starting with the initial guess $x^{(0)} = \begin{pmatrix} 0 \ 0 \ 0 \end{pmatrix}$:</p>
+<p>$$2x_1 - x_2 = 1$$</p>
+<p>$$-x_1 + 2x_2 - x_3 = 0$$</p>
+<p>$$-x_2 + 2x_3 = 1$$</p>
+<hr />
+<h4 id="step-1-rearrange-into-component-form-or-matrix-form"><strong>Step 1: Rearrange into Component Form (or Matrix Form)</strong></h4>
+<p>For the Jacobi method, express each equation explicitly in terms of its diagonal variable:</p>
+<ol>
+<li>$x_1 = \frac{1 + x_2}{2} = 0.5 + 0.5x_2$</li>
+<li>$x_2 = \frac{0 + x_1 + x_3}{2} = 0.5x_1 + 0.5x_3$</li>
+<li>$x_3 = \frac{1 + x_2}{2} = 0.5 + 0.5x_2$</li>
+</ol>
+<p>In matrix form $x^{(k)} = T_{jac}x^{(k-1)} + c_{jac}$:</p>
+<p>$$T_{jac} = \begin{pmatrix} 0 &amp; 0.5 &amp; 0 \ 0.5 &amp; 0 &amp; 0.5 \ 0 &amp; 0.5 &amp; 0 \end{pmatrix}, \quad c_{jac} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<hr />
+<h4 id="step-2-check-convergence-via-spectral-radius"><strong>Step 2: Check Convergence via Spectral Radius</strong></h4>
+<p>Find the eigenvalues $\lambda$ of $T_{jac}$ by solving $\det(T_{jac} - \lambda I) = 0$:</p>
+<p>$$\det \begin{pmatrix} -\lambda &amp; 0.5 &amp; 0 \ 0.5 &amp; -\lambda &amp; 0.5 \ 0 &amp; 0.5 &amp; -\lambda \end{pmatrix} = 0$$</p>
+<p>Expanding the characteristic polynomial yields:</p>
+<p>$$-\lambda(\lambda^2 - 0.5) = 0$$</p>
+<p>$$\lambda_1 = 0, \quad \lambda_2 = \sqrt{0.5} \approx 0.7071, \quad \lambda_3 = -\sqrt{0.5} \approx -0.7071$$</p>
+<p>The spectral radius is:</p>
+<p>$$\rho(T_{jac}) = \max(\vert{}\lambda_i\vert{}) = 0.7071 &lt; 1$$</p>
+<p><em>Conclusion:</em> Since $\rho(T_{jac}) &lt; 1$, the Jacobi method <strong>converges</strong>.</p>
+<hr />
+<h4 id="step-3-perform-iterations"><strong>Step 3: Perform Iterations</strong></h4>
+<ul>
+<li><strong>First Iteration ($k = 1$):</strong><br />
+Using $x^{(0)} = \begin{pmatrix} 0 \ 0 \ 0 \end{pmatrix}$:</li>
+</ul>
+<p>$$x_1^{(1)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x_2^{(1)} = 0.5(0) + 0.5(0) = 0$$</p>
+<p>$$x_3^{(1)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x^{(1)} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<ul>
+<li><strong>Second Iteration ($k = 2$):</strong><br />
+Using $x^{(1)} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$:</li>
+</ul>
+<p>$$x_1^{(2)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x_2^{(2)} = 0.5(0.5) + 0.5(0.5) = 0.25 + 0.25 = 0.5$$</p>
+<p>$$x_3^{(2)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x^{(2)} = \begin{pmatrix} 0.5 \ 0.5 \ 0.5 \end{pmatrix}$$### <strong>Convergence Theorem of an Iterative Solver</strong></p>
+<p><strong>Theorem:</strong><br />
+A stationary linear iterative method of the form $x^{(k)} = Tx^{(k-1)} + c$ converges to the unique solution of the system for any arbitrary initial guess $x^{(0)}$ if and only if the spectral radius of the iteration matrix $T$ is strictly less than 1:</p>
+<p>$$\rho(T) &lt; 1$$</p>
+<p>where the spectral radius $\rho(T)$ is defined as the maximum absolute value of the eigenvalues of $T$:</p>
+<p>$$\rho(T) = \max_i \vert{}\lambda_i\vert{}$$</p>
+<hr />
+<h3 id="step-by-step-jacobi-iteration-method-exam-style-solution_1"><strong>Step-by-Step Jacobi Iteration Method (Exam-Style Solution)</strong></h3>
+<h4 id="problem-statement_3"><strong>Problem Statement:</strong></h4>
+<p>Solve the following system of linear equations using the Jacobi iteration method starting with the initial guess $x^{(0)} = \begin{pmatrix} 0 \ 0 \ 0 \end{pmatrix}$:</p>
+<p>$$2x_1 - x_2 = 1$$</p>
+<p>$$-x_1 + 2x_2 - x_3 = 0$$</p>
+<p>$$-x_2 + 2x_3 = 1$$</p>
+<hr />
+<h4 id="step-1-rearrange-into-component-form-or-matrix-form_1"><strong>Step 1: Rearrange into Component Form (or Matrix Form)</strong></h4>
+<p>For the Jacobi method, express each equation explicitly in terms of its diagonal variable:</p>
+<ol>
+<li>$x_1 = \frac{1 + x_2}{2} = 0.5 + 0.5x_2$</li>
+<li>$x_2 = \frac{0 + x_1 + x_3}{2} = 0.5x_1 + 0.5x_3$</li>
+<li>$x_3 = \frac{1 + x_2}{2} = 0.5 + 0.5x_2$</li>
+</ol>
+<p>In matrix form $x^{(k)} = T_{jac}x^{(k-1)} + c_{jac}$:</p>
+<p>$$T_{jac} = \begin{pmatrix} 0 &amp; 0.5 &amp; 0 \ 0.5 &amp; 0 &amp; 0.5 \ 0 &amp; 0.5 &amp; 0 \end{pmatrix}, \quad c_{jac} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<hr />
+<h4 id="step-2-check-convergence-via-spectral-radius_1"><strong>Step 2: Check Convergence via Spectral Radius</strong></h4>
+<p>Find the eigenvalues $\lambda$ of $T_{jac}$ by solving $\det(T_{jac} - \lambda I) = 0$:</p>
+<p>$$\det \begin{pmatrix} -\lambda &amp; 0.5 &amp; 0 \ 0.5 &amp; -\lambda &amp; 0.5 \ 0 &amp; 0.5 &amp; -\lambda \end{pmatrix} = 0$$</p>
+<p>Expanding the characteristic polynomial yields:</p>
+<p>$$-\lambda(\lambda^2 - 0.5) = 0$$</p>
+<p>$$\lambda_1 = 0, \quad \lambda_2 = \sqrt{0.5} \approx 0.7071, \quad \lambda_3 = -\sqrt{0.5} \approx -0.7071$$</p>
+<p>The spectral radius is:</p>
+<p>$$\rho(T_{jac}) = \max(\vert{}\lambda_i\vert{}) = 0.7071 &lt; 1$$</p>
+<p><em>Conclusion:</em> Since $\rho(T_{jac}) &lt; 1$, the Jacobi method <strong>converges</strong>.</p>
+<hr />
+<h4 id="step-3-perform-iterations_1"><strong>Step 3: Perform Iterations</strong></h4>
+<ul>
+<li><strong>First Iteration ($k = 1$):</strong><br />
+Using $x^{(0)} = \begin{pmatrix} 0 \ 0 \ 0 \end{pmatrix}$:</li>
+</ul>
+<p>$$x_1^{(1)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x_2^{(1)} = 0.5(0) + 0.5(0) = 0$$</p>
+<p>$$x_3^{(1)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x^{(1)} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$$</p>
+<ul>
+<li><strong>Second Iteration ($k = 2$):</strong><br />
+Using $x^{(1)} = \begin{pmatrix} 0.5 \ 0 \ 0.5 \end{pmatrix}$:</li>
+</ul>
+<p>$$x_1^{(2)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x_2^{(2)} = 0.5(0.5) + 0.5(0.5) = 0.25 + 0.25 = 0.5$$</p>
+<p>$$x_3^{(2)} = 0.5 + 0.5(0) = 0.5$$</p>
+<p>$$x^{(2)} = \begin{pmatrix} 0.5 \ 0.5 \ 0.5 \end{pmatrix}$$</p>
+</body>
+</html>
