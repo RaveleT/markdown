@@ -22,11 +22,14 @@ if not st.session_state["authenticated"]:
     st.title("🔒 Enter PIN to Access Notes")
     with st.form("pin_form"):
         entered_pin = st.text_input("PIN", type="password", max_chars=6)
-        if st.form_submit_button("Unlock") and entered_pin == st.secrets["APP_PIN"]:
-            st.session_state["authenticated"] = True
-            st.rerun()
-        elif st.form_submit_button("Unlock"):
-            st.error("Incorrect PIN.")
+        submit_button = st.form_submit_button("Unlock")
+        
+        if submit_button:
+            if entered_pin == st.secrets["APP_PIN"]:
+                st.session_state["authenticated"] = True
+                st.rerun()
+            else:
+                st.error("Incorrect PIN.")
 else:
     if st.sidebar.button("🔒 Lock App"):
         st.session_state["authenticated"] = False
