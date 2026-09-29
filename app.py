@@ -8,6 +8,38 @@ from supabase import Client, create_client
 # ====================== CONFIG & SUPABASE ======================
 st.set_page_config(page_title="STA 2242 Chapter Notes", page_icon="📚", layout="wide")
 
+# ====================== CUSTOM DARK MODE CSS ======================
+st.markdown("""
+    <style>
+        /* Force Dark Theme on Streamlit UI Elements */
+        .stApp {
+            background-color: #0e1117;
+            color: #fafafa;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #161b22;
+        }
+        [data-testid="stHeader"] {
+            background-color: rgba(0,0,0,0);
+        }
+        /* Style form inputs, text boxes, and buttons for dark mode */
+        .stTextInput input, .stPasswordInput input {
+            background-color: #21262d;
+            color: #ffffff;
+            border-color: #30363d;
+        }
+        .stButton>button {
+            background-color: #238636;
+            color: white;
+            border: none;
+        }
+        .stButton>button:hover {
+            background-color: #2ea043;
+            color: white;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 SA_TZ = ZoneInfo("Africa/Johannesburg")
 
 url = st.secrets["SUPABASE_URL"]
