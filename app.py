@@ -5,6 +5,18 @@ import streamlit as st
 import streamlit.components.v1 as components
 from supabase import Client, create_client
 
+# --- HIDE STREAMLIT HEADER & GITHUB ICONS ---
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    div[data-testid="stToolbar"] {display: none !important;}
+    div[data-testid="stDecoration"] {display: none !important;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # ====================== CONFIG & SUPABASE ======================
 st.set_page_config(page_title="STA 2242 Chapter Notes", page_icon="📚", layout="wide")
 
