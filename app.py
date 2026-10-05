@@ -18,7 +18,7 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # ====================== CONFIG & SUPABASE ======================
-st.set_page_config(page_title="STA 2242 Chapter Notes", page_icon="📚", layout="wide")
+st.set_page_config(page_title="MAT 2247 Chapter Notes", page_icon="📚", layout="wide")
 
 # ====================== CUSTOM DARK MODE CSS ======================
 st.markdown("""
@@ -67,7 +67,7 @@ if not st.session_state["authenticated"]:
     with st.form("pin_form"):
         entered_pin = st.text_input("PIN", type="password", max_chars=6)
         submit_button = st.form_submit_button("Unlock")
-        
+
         if submit_button:
             if entered_pin == st.secrets["APP_PIN"]:
                 st.session_state["authenticated"] = True
@@ -95,30 +95,31 @@ else:
         except Exception:
             return pd.DataFrame(columns=["ID", "Timestamp", "Subject", "Focus_State", "Notes"])
 
-    st.title("📚 STA 2242 — Latest Chapter Notes")
+    st.title("📚 MAT 2247 — Latest Chapter Notes")
 
     history = load_logs()
-    
+
     if not history.empty:
-        # Filter strictly for STA 2242 and "Chapter Notes" category/focus_state
-        sta_notes = history[
-            (history["Subject"] == "STA 2242") & 
+        # Filter strictly for MAT 2247 and "Chapter Notes" category/focus_state
+        mat_notes = history[
+            (history["Subject"].str.contains("MAT 2247", case=False, na=False)) & 
             (history["Focus_State"].str.lower() == "chapter notes")
         ]
 
-        if not sta_notes.empty:
-            # Get the latest entry
-            latest_entry = sta_notes.iloc[0]
-            
+        if not mat_notes.empty:
+            # Get the latest entry (your uploaded test2.md content)
+            latest_entry = mat_notes.iloc[0]
+
             st.subheader(f"🗓️ {latest_entry.get('Timestamp', 'Recent Entry')}")
             notes_content = latest_entry.get("Notes", "No content provided.")
-            
+
             stripped = notes_content.strip().lower()
             if stripped.startswith("<!doctype") or stripped.startswith("<html") or stripped.startswith("<div"):
                 components.html(notes_content, height=600, scrolling=True)
             else:
-                st.markdown(notes_content)
+                # Render Markdown content from test2.md with HTML allowed for custom styling
+                st.markdown(notes_content, unsafe_allow_html=True)
         else:
-            st.warning("No entries found under 'Chapter Notes' for STA 2242.")
+            st.warning("No entries found under 'Chapter Notes' for MAT 2247 in Supabase.")
     else:
         st.warning("No logs found in Supabase database.")
